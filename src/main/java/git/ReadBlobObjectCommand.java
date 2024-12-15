@@ -21,10 +21,10 @@ public class ReadBlobObjectCommand implements Command {
             throw new FileNotFoundException("Blob %s not found.".formatted(hash));
         }
 
-        byte[] compressedData = Files.readAllBytes(path);
-        byte[] decompressedData = Zlib.decompress(compressedData);
+        byte[] compressedBytes = Files.readAllBytes(path);
+        byte[] decompressedBytes = Zlib.decompress(compressedBytes);
 
-        Matcher matcher = Regex.BLOB_OBJECT.get().matcher(new String(decompressedData, StandardCharsets.UTF_8));
+        Matcher matcher = Regex.BLOB_OBJECT.get().matcher(new String(decompressedBytes, StandardCharsets.UTF_8));
         if (matcher.find()) {
             String content = matcher.group("content");
             System.out.print(content);

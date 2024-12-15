@@ -1,5 +1,6 @@
 package util;
 
+import java.util.HexFormat;
 import java.util.Objects;
 
 public final class Strings {
@@ -24,6 +25,10 @@ public final class Strings {
         if (!expectedValue.equals(value)) {
             throw new IllegalArgumentException(message);
         }
+    }
+
+    public static String toSHA1(byte[] input) {
+        return HexFormat.of().formatHex(Bytes.toSHA1(input));
     }
 
 }

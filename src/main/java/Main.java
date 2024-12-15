@@ -1,7 +1,4 @@
-import git.CommandExecutor;
-import git.GitCommand;
-import git.InitCommand;
-import git.ReadBlobObjectCommand;
+import git.*;
 import util.Arrays;
 import util.Validator;
 
@@ -25,6 +22,10 @@ public class Main {
             case CAT_FILE -> {
                 Validator.validateBlobObjectRead(args);
                 executor.execute(new ReadBlobObjectCommand(), args[2]);
+            }
+            case HASH_OBJECT -> {
+                Validator.validateBlobObjectWrite(args);
+                executor.execute(new WriteBlobObjectCommand(), args[2]);
             }
         }
     }

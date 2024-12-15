@@ -9,4 +9,11 @@ public final class Validator {
         Strings.requireNonBlank(args[2], prompt);
     }
 
+    public static void validateBlobObjectWrite(String... args) {
+        String prompt = "Usage hash-object -w <file>";
+        Arrays.requireSize(args, 3, prompt);
+        Strings.requireEquals(args[1], "-w", prompt);
+        Strings.requireNonBlank(args[2], prompt);
+    }
+
 }
