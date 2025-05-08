@@ -11,4 +11,11 @@ public final class Arrays {
         }
     }
 
+    public static <T> void requireSize(T[] array, int size, String message) {
+        Objects.requireNonNull(array, message);
+        if (array.length != size) {
+            throw new IllegalArgumentException(message);
+        }
+    }
+
 }

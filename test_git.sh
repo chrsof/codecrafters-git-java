@@ -34,8 +34,28 @@ function init_git() {
   popd > /dev/null
 }
 
+function read_blob_object() {
+  printf 'Running test for Stage #IC4 (Read a blob object)\n'
+  pushd $dir > /dev/null
+  rm -rf .git
+  java -jar "$jar" "$@" "init"
+  contents="apples oranges grapes"
+  echo "$contents" > contents.txt
+  hash=$(git hash-object -w contents.txt)
+  printf 'Created blob object with hash %s\n' "$hash"
+  out=$(java -jar "$jar" "$@" "cat-file" "-p" "$hash")
+  if [[ ! $out =~ $contents ]] ; then
+    printf 'Expected %s, got %s\nTest Failed' "$contents" "$out"
+    exit 1
+  fi
+  printf 'Valid blob object contents\nTest passed\n'
+  popd > /dev/null
+}
+
 function test() {
   init_git
+  printf '\n'
+  read_blob_object
 }
 
 if [ $# -eq 0 ]; then
