@@ -4,7 +4,8 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public enum GitCommand {
-    INIT("init");
+    INIT("init"),
+    CAT_FILE("cat-file");
 
     private final String command;
 

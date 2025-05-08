@@ -1,7 +1,9 @@
 import git.CommandExecutor;
 import git.GitCommand;
 import git.InitCommand;
+import git.ReadBlobObjectCommand;
 import util.Arrays;
+import util.Validator;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -19,8 +21,12 @@ public class Main {
         CommandExecutor commandExecutor = new CommandExecutor();
 
         try {
-            if (command.get() == GitCommand.INIT) {
-                commandExecutor.execute(new InitCommand());
+            switch (command.get()) {
+                case INIT -> commandExecutor.execute(new InitCommand());
+                case CAT_FILE -> {
+                    Validator.validateBlobObjectRead(args);
+                    commandExecutor.execute(new ReadBlobObjectCommand(), args[2]);
+                }
             }
         } catch (IOException ioe) {
             System.err.printf("IOException: %s%n", ioe.getMessage());
