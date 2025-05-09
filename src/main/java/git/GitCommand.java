@@ -5,7 +5,8 @@ import java.util.Optional;
 
 public enum GitCommand {
     INIT("init"),
-    CAT_FILE("cat-file");
+    CAT_FILE("cat-file"),
+    HASH_OBJECT("hash-object");
 
     private final String command;
 
