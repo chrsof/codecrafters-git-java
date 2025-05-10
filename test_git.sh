@@ -3,6 +3,7 @@
 dir=/tmp/git-java
 jar=codecrafters-git.jar
 
+rm -rf $dir
 mvn -B package -Ddir=$dir
 
 function init_git() {
@@ -72,12 +73,34 @@ function create_blob_object() {
   popd > /dev/null
 }
 
+function read_tree_object() {
+  printf 'Running test for Stage #KP1 (Read a tree object)\n'
+  pushd $dir > /dev/null
+  if [ ! -d ".git" ]; then
+    java -jar "$jar" "$@" "init"
+  fi
+  contents="apples oranges grapes"
+  mkdir "fruits"
+  echo "$contents" > fruits/contents.txt
+  git add fruits
+  hash=$(git write-tree)
+  out=$(java -jar "$jar" "$@" "ls-tree" "--name-only" "$hash")
+  if [[ ! $out =~ fruits ]] ; then
+    printf 'Expected fruits, got %s\nTest Failed' "$out"
+    exit 1
+  fi
+  printf 'Valid output fruits\nTest passed\n'
+  popd > /dev/null
+}
+
 function test() {
   init_git
   printf '\n'
   read_blob_object
   printf '\n'
   create_blob_object
+  printf '\n'
+  read_tree_object
 }
 
 if [ $# -eq 0 ]; then

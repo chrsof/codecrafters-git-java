@@ -16,4 +16,11 @@ public final class Validator {
         Strings.requireNonBlank(args[2], prompt);
     }
 
+    public static void validateTreeObjectRead(String... args) {
+        String prompt = "Usage: ls-tree --name-only <tree_sha>";
+        Arrays.requireSize(args, 3, prompt);
+        Strings.requireEquals(args[1], "--name-only", prompt);
+        Strings.requireNonBlank(args[2], prompt);
+    }
+
 }

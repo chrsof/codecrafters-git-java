@@ -8,7 +8,7 @@ import java.util.Optional;
 public class Main {
 
     public static void main(String[] args) {
-        Arrays.requireNonEmpty(args, "Invalid input: usage <command> <options> <args>");
+        Arrays.requireNonEmpty(args, "Usage: <command> <options> <args>");
 
         Optional<GitCommand> command = GitCommand.resolveCommand(args[0]);
         if (command.isEmpty()) {
@@ -27,6 +27,10 @@ public class Main {
                 case HASH_OBJECT -> {
                     Validator.validateBlobObjectWrite(args);
                     commandExecutor.execute(new WriteBlobObjectCommand(), args[2]);
+                }
+                case LS_TREE -> {
+                    Validator.validateTreeObjectRead(args);
+                    commandExecutor.execute(new ReadTreeObjectCommand(), args[2]);
                 }
             }
         } catch (IOException ioe) {
