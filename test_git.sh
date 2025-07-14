@@ -40,13 +40,13 @@ function read_blob_object() {
   pushd $dir > /dev/null
   rm -rf .git
   java -jar "$jar" "$@" "init"
-  contents="apples oranges grapes"
-  echo "$contents" > contents.txt
-  hash=$(git hash-object -w contents.txt)
+  fruits="apples oranges grapes"
+  echo "$fruits" > fruits.txt
+  hash=$(git hash-object -w fruits.txt)
   printf 'Created blob object with hash %s\n' "$hash"
   out=$(java -jar "$jar" "$@" "cat-file" "-p" "$hash")
-  if [[ ! $out =~ $contents ]] ; then
-    printf 'Expected %s, got %s\nTest Failed' "$contents" "$out"
+  if [[ ! $out =~ $fruits ]] ; then
+    printf 'Expected %s, got %s\nTest Failed' "$fruits" "$out"
     exit 1
   fi
   printf 'Valid blob object contents\nTest passed\n'
@@ -59,12 +59,12 @@ function create_blob_object() {
   if [ ! -d ".git" ]; then
     java -jar "$jar" "$@" "init"
   fi
-  contents="apples oranges grapes"
-  echo "$contents" > contents.txt
-  hash=$(git hash-object -w contents.txt)
+  fruits="apples oranges grapes"
+  echo "$fruits" > fruits.txt
+  hash=$(git hash-object -w fruits.txt)
   rm -rf .git
   java -jar "$jar" "$@" "init"
-  out=$(java -jar "$jar" "$@" "hash-object" "-w" "contents.txt")
+  out=$(java -jar "$jar" "$@" "hash-object" "-w" "fruits.txt")
   if [[ ! $out =~ $hash ]] ; then
     printf 'Expected %s, got %s\nTest Failed' "$hash" "$out"
     exit 1
@@ -79,12 +79,35 @@ function read_tree_object() {
   if [ ! -d ".git" ]; then
     java -jar "$jar" "$@" "init"
   fi
-  contents="apples oranges grapes"
+  fruits="apples oranges grapes"
   mkdir "fruits"
-  echo "$contents" > fruits/contents.txt
+  echo "$fruits" > fruits/fruits.txt
   git add fruits
   hash=$(git write-tree)
   out=$(java -jar "$jar" "$@" "ls-tree" "--name-only" "$hash")
+  if [[ ! $out =~ fruits ]] ; then
+    printf 'Expected fruits, got %s\nTest Failed' "$out"
+    exit 1
+  fi
+  printf 'Valid output fruits\nTest passed\n'
+  popd > /dev/null
+}
+
+function write_tree_object() {
+  printf 'Running test for Stage #FE4 (Write a tree object)\n'
+  pushd $dir > /dev/null
+  if [ -d ".git" ]; then
+    rm -rf ".git"
+  fi
+  java -jar "$jar" "$@" "init"
+  if [ -d "fruits" ]; then
+    rm -r "fruits"
+    rm fruits.txt
+  fi
+  mkdir "fruits"
+  echo "apples oranges grapes" > fruits/fruits.txt
+  hash=$(java -jar "$jar" "$@" "write-tree")
+  out=$(java -jar "$jar" "$@" "ls-tree" "--name-only" "$hash" | tail -n1)
   if [[ ! $out =~ fruits ]] ; then
     printf 'Expected fruits, got %s\nTest Failed' "$out"
     exit 1
@@ -101,6 +124,8 @@ function test() {
   create_blob_object
   printf '\n'
   read_tree_object
+  printf '\n'
+  write_tree_object
 }
 
 if [ $# -eq 0 ]; then

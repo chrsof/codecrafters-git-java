@@ -7,7 +7,8 @@ public enum GitCommand {
     INIT("init"),
     CAT_FILE("cat-file"),
     HASH_OBJECT("hash-object"),
-    LS_TREE("ls-tree");
+    LS_TREE("ls-tree"),
+    WRITE_TREE("write-tree");
 
     private final String command;
 
