@@ -13,10 +13,10 @@ public class ReadTreeObjectCommand implements Command {
 
     @Override
     public void execute(String... args) throws IOException {
-        String file = args[0];
-        Path path = PathFactory.getGitObjectsPath().resolve(file.substring(0, 2), file.substring(2));
+        String hash = args[0];
+        Path path = PathFactory.getGitObjectsPath().resolve(hash.substring(0, 2), hash.substring(2));
         if (!Files.exists(path)) {
-            throw new FileNotFoundException("File %s is not found.".formatted(file));
+            throw new FileNotFoundException("File %s is not found.".formatted(hash));
         }
         String content = ReaderFactory.read(path, ObjectType.TREE);
         System.out.println(content);
