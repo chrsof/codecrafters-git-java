@@ -32,6 +32,7 @@ public class Main {
                     Validator.validateTreeObjectRead(args);
                     commandExecutor.execute(new ReadTreeObjectCommand(), args[2]);
                 }
+                case WRITE_TREE -> commandExecutor.execute(new WriteTreeObjectCommand());
             }
         } catch (IOException ioe) {
             System.err.printf("IOException: %s%n", ioe.getMessage());

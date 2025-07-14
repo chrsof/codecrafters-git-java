@@ -25,4 +25,8 @@ public final class PathFactory {
         return getGitRootPath().resolve(FILE_HEAD);
     }
 
+    public static Path getRootPath() {
+        return Path.of(System.getenv().get("PWD"));
+    }
+
 }

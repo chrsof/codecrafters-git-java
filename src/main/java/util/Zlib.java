@@ -43,7 +43,7 @@ public final class Zlib {
                 baos.write(buffer, 0, size);
             }
             return baos.toByteArray();
-        } catch (IOException e) {
+        } catch (IOException ioe) {
             return new byte[0];
         }
     }
