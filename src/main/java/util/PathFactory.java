@@ -1,5 +1,7 @@
 package util;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 public final class PathFactory {
@@ -27,6 +29,12 @@ public final class PathFactory {
 
     public static Path getRootPath() {
         return Path.of(System.getenv().get("PWD"));
+    }
+
+    public static void writeToGitObjects(String hash, byte[] data) throws IOException {
+        Path parentDirPath = Files.createDirectory(PathFactory.getGitObjectsPath().resolve(hash.substring(0, 2)));
+        Path objectPath = Files.createFile(parentDirPath.resolve(hash.substring(2)));
+        Files.write(objectPath, data);
     }
 
 }

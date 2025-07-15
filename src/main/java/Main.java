@@ -33,6 +33,10 @@ public class Main {
                     commandExecutor.execute(new ReadTreeObjectCommand(), args[2]);
                 }
                 case WRITE_TREE -> commandExecutor.execute(new WriteTreeObjectCommand());
+                case COMMIT_TREE -> {
+                    Validator.validateTreeCommit(args);
+                    commandExecutor.execute(new CommitTree(), args[1], args[3], args[5]);
+                }
             }
         } catch (IOException ioe) {
             System.err.printf("IOException: %s%n", ioe.getMessage());
