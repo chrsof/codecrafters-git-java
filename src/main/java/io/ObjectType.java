@@ -1,5 +1,5 @@
 package io;
 
 public enum ObjectType {
-    BLOB, TREE
+    BLOB, TREE, COMMIT
 }

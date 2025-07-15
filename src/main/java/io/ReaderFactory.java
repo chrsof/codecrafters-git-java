@@ -9,6 +9,7 @@ public final class ReaderFactory {
         return switch (objectType) {
             case BLOB -> BlobReader.getInstance().read(path);
             case TREE -> TreeReader.getInstance().read(path);
+            default -> throw new UnsupportedOperationException("Object type %s not supported.".formatted(objectType));
         };
     }
 

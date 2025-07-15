@@ -1,4 +1,4 @@
-package git;
+package io;
 
 import util.PathFactory;
 import util.Strings;
@@ -10,24 +10,33 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
-public class CommitTree implements Command {
+public final class CommitWriter implements Writer {
+
+    private static final class LazyHolder {
+        private static final CommitWriter INSTANCE = new CommitWriter();
+    }
+
+    private CommitWriter() {
+    }
+
+    public static CommitWriter getInstance() {
+        return LazyHolder.INSTANCE;
+    }
 
     @Override
-    public void execute(String... args) throws IOException {
+    public String write(String... args) throws IOException {
         String treeHash = args[0];
         String parentHash = args[1];
         String message = args[2];
         Strings.requireLength(treeHash, 40);
         Strings.requireLength(parentHash, 40);
 
-        /*
-         * tree {tree_sha}
-         * parent {parent_sha}
-         * author {author_name} <{author_email}> {author_date_seconds} {author_date_timezone}
-         * committer {committer_name} <{committer_email}> {committer_date_seconds} {committer_date_timezone}
-         *
-         * {commit message}
-         * */
+        // tree {tree_sha}
+        // parent {parent_sha}
+        // author {author_name} <{author_email}> {author_date_seconds} {author_date_timezone}
+        // committer {committer_name} <{committer_email}> {committer_date_seconds} {committer_date_timezone}
+        //
+        // {commit message}
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         baos.write("tree %s\n"
                 .formatted(treeHash)
@@ -67,7 +76,7 @@ public class CommitTree implements Command {
 
         PathFactory.writeToGitObjects(hash, compressedData);
 
-        System.out.print(hash);
+        return hash;
     }
 
 }
