@@ -41,19 +41,21 @@ public final class TreeWriter implements Writer {
             };
 
             // <mode> <name>\0<20_byte_sha>
-            baos.write(node.getMode().getMode().getBytes(StandardCharsets.UTF_8));
-            baos.write(' ');
-            baos.write(node.getName().getBytes(StandardCharsets.UTF_8));
+            baos.write("%s %s"
+                    .formatted(node.getMode().getMode(), node.getName())
+                    .getBytes(StandardCharsets.UTF_8));
             baos.write(0);
             baos.write(Bytes.hexToBytes(hash));
         }
 
         // tree <size>\0
         byte[] entries = baos.toByteArray();
-        String treeContent = "tree %d\0".formatted(entries.length);
 
         baos = new ByteArrayOutputStream();
-        baos.write(treeContent.getBytes(StandardCharsets.UTF_8));
+        baos.write("tree %d"
+                .formatted(entries.length)
+                .getBytes(StandardCharsets.UTF_8));
+        baos.write(0);
         baos.write(entries);
 
         byte[] decompressedData = baos.toByteArray();
@@ -61,9 +63,7 @@ public final class TreeWriter implements Writer {
 
         String hash = Strings.toSHA1(decompressedData);
 
-        Path treeParentDirPath = Files.createDirectory(PathFactory.getGitObjectsPath().resolve(hash.substring(0, 2)));
-        Path treeObjectPath = Files.createFile(treeParentDirPath.resolve(hash.substring(2)));
-        Files.write(treeObjectPath, compressedData);
+        PathFactory.writeToGitObjects(hash, compressedData);
 
         return hash;
     }

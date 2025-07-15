@@ -26,11 +26,13 @@ public final class BlobWriter implements Writer {
     @Override
     public String write(Path path) throws IOException {
         byte[] content = Files.readAllBytes(path);
-        String blobContent = "blob %d\0".formatted(content.length);
 
         // blob <size>\0<content>
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        baos.write(blobContent.getBytes(StandardCharsets.UTF_8));
+        baos.write("blob %d"
+                .formatted(content.length)
+                .getBytes(StandardCharsets.UTF_8));
+        baos.write(0);
         baos.write(content);
 
         byte[] decompressedData = baos.toByteArray();
@@ -38,9 +40,7 @@ public final class BlobWriter implements Writer {
 
         String hash = Strings.toSHA1(decompressedData);
 
-        Path blobParentDirPath = Files.createDirectory(PathFactory.getGitObjectsPath().resolve(hash.substring(0, 2)));
-        Path blobObjectPath = Files.createFile(blobParentDirPath.resolve(hash.substring(2)));
-        Files.write(blobObjectPath, compressedData);
+        PathFactory.writeToGitObjects(hash, compressedData);
 
         return hash;
     }
