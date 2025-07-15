@@ -3,7 +3,12 @@ package io;
 import java.io.IOException;
 import java.nio.file.Path;
 
-@FunctionalInterface
 public interface Writer {
-    String write(Path path) throws IOException;
+    default String write(Path path) throws IOException {
+        return "";
+    }
+
+    default String write(String... args) throws IOException {
+        return "";
+    }
 }

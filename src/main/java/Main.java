@@ -35,7 +35,7 @@ public class Main {
                 case WRITE_TREE -> commandExecutor.execute(new WriteTreeObjectCommand());
                 case COMMIT_TREE -> {
                     Validator.validateTreeCommit(args);
-                    commandExecutor.execute(new CommitTree(), args[1], args[3], args[5]);
+                    commandExecutor.execute(new CommitTreeCommand(), args[1], args[3], args[5]);
                 }
             }
         } catch (IOException ioe) {

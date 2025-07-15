@@ -116,6 +116,34 @@ function write_tree_object() {
   popd > /dev/null
 }
 
+function create_commit() {
+  printf 'Running test for Stage #JM9 (Create a commit)\n'
+  pushd $dir > /dev/null
+  if [ -d ".git" ]; then
+    rm -rf ".git"
+  fi
+  java -jar "$jar" "$@" "init"
+  if [ -d "fruits" ]; then
+    rm -r "fruits"
+  fi
+  mkdir "fruits"
+  echo "apples oranges grapes" > fruits/fruits.txt
+  tree_hash=$(git write-tree)
+  echo "pear apple orange pineapple" > fruits/salad.txt
+  git add fruits
+  git commit -m "Initial commit"
+  commit_hash=$(git rev-parse HEAD)
+  message="Fruits for a fruit salad"
+  out=$(java -jar "$jar" "$@" "commit-tree" "$tree_hash" "-p" "$commit_hash" "-m" "$message")
+  out=$(git rev-list --format=%B --max-count=1 $out | head -2 | tail -1)
+  if [[ "$out" != "$message"  ]] ; then
+    printf 'Expected %s, got %s\nTest Failed' "$message" "$out"
+    exit 1
+  fi
+  printf 'Valid commit message\nTest passed\n'
+  popd > /dev/null
+}
+
 function test() {
   init_git
   printf '\n'
@@ -126,6 +154,8 @@ function test() {
   read_tree_object
   printf '\n'
   write_tree_object
+  printf '\n'
+  create_commit
 }
 
 if [ $# -eq 0 ]; then
